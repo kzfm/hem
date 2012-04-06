@@ -1,0 +1,72 @@
+<!DOCTYPE html>  <html> <head>   <title>compilers.coffee</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="compilers.html">                 compilers.coffee               </a>                                           <a class="source" href="css.html">                 css.coffee               </a>                                           <a class="source" href="dependency.html">                 dependency.coffee               </a>                                           <a class="source" href="hem.html">                 hem.coffee               </a>                                           <a class="source" href="package.html">                 package.coffee               </a>                                           <a class="source" href="resolve.html">                 resolve.coffee               </a>                                           <a class="source" href="specs.html">                 specs.coffee               </a>                                           <a class="source" href="stitch.html">                 stitch.coffee               </a>                                           <a class="source" href="utils.html">                 utils.coffee               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               compilers.coffee             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="nv">fs        = </span><span class="nx">require</span><span class="p">(</span><span class="s1">&#39;fs&#39;</span><span class="p">)</span>
+<span class="p">{</span><span class="nx">dirname</span><span class="p">}</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;path&#39;</span><span class="p">)</span>
+<span class="nv">compilers = </span><span class="p">{}</span>
+
+<span class="nv">compilers.js = compilers.css = </span><span class="nf">(path) -&gt;</span>
+  <span class="nx">fs</span><span class="p">.</span><span class="nx">readFileSync</span> <span class="nx">path</span><span class="p">,</span> <span class="s1">&#39;utf8&#39;</span>
+
+<span class="nx">require</span><span class="p">.</span><span class="nx">extensions</span><span class="p">[</span><span class="s1">&#39;.css&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nf">(module, filename) -&gt;</span>
+  <span class="nv">source = </span><span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">compilers</span><span class="p">.</span><span class="nx">css</span><span class="p">(</span><span class="nx">filename</span><span class="p">))</span>
+  <span class="nx">module</span><span class="p">.</span><span class="nx">_compile</span> <span class="s2">&quot;module.exports = #{source}&quot;</span><span class="p">,</span> <span class="nx">filename</span>
+
+<span class="k">try</span>
+  <span class="nv">cs = </span><span class="nx">require</span> <span class="s1">&#39;coffee-script&#39;</span>
+  <span class="nv">compilers.coffee = </span><span class="nf">(path) -&gt;</span>
+    <span class="nx">cs</span><span class="p">.</span><span class="nx">compile</span><span class="p">(</span><span class="nx">fs</span><span class="p">.</span><span class="nx">readFileSync</span><span class="p">(</span><span class="nx">path</span><span class="p">,</span> <span class="s1">&#39;utf8&#39;</span><span class="p">),</span> <span class="nv">filename: </span><span class="nx">path</span><span class="p">)</span>
+<span class="k">catch</span> <span class="nx">err</span>
+
+<span class="nv">eco = </span><span class="nx">require</span> <span class="s1">&#39;eco&#39;</span>
+
+<span class="nv">compilers.eco = </span><span class="nf">(path) -&gt;</span> 
+  <span class="nv">content = </span><span class="nx">eco</span><span class="p">.</span><span class="nx">precompile</span> <span class="nx">fs</span><span class="p">.</span><span class="nx">readFileSync</span> <span class="nx">path</span><span class="p">,</span> <span class="s1">&#39;utf8&#39;</span>
+  <span class="s2">&quot;module.exports = #{content}&quot;</span>
+
+<span class="nv">compilers.jeco = </span><span class="nf">(path) -&gt;</span> 
+  <span class="nv">content = </span><span class="nx">eco</span><span class="p">.</span><span class="nx">precompile</span> <span class="nx">fs</span><span class="p">.</span><span class="nx">readFileSync</span> <span class="nx">path</span><span class="p">,</span> <span class="s1">&#39;utf8&#39;</span>
+  <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">  module.exports = function(values){ </span>
+<span class="s2">    var $  = jQuery, result = $();</span>
+<span class="s2">    values = $.makeArray(values);</span>
+<span class="s2">    </span>
+<span class="s2">    for(var i=0; i &lt; values.length; i++) {</span>
+<span class="s2">      var value = values[i];</span>
+<span class="s2">      var elem  = $((#{content})(value));</span>
+<span class="s2">      elem.data(&#39;item&#39;, value);</span>
+<span class="s2">      $.merge(result, elem);</span>
+<span class="s2">    }</span>
+<span class="s2">    return result;</span>
+<span class="s2">  };</span>
+<span class="s2">  &quot;&quot;&quot;</span>
+
+<span class="nx">require</span><span class="p">.</span><span class="nx">extensions</span><span class="p">[</span><span class="s1">&#39;.jeco&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nx">require</span><span class="p">.</span><span class="nx">extensions</span><span class="p">[</span><span class="s1">&#39;.eco&#39;</span><span class="p">]</span>
+
+<span class="nv">compilers.tmpl = </span><span class="nf">(path) -&gt;</span>
+  <span class="nv">content = </span><span class="nx">fs</span><span class="p">.</span><span class="nx">readFileSync</span><span class="p">(</span><span class="nx">path</span><span class="p">,</span> <span class="s1">&#39;utf8&#39;</span><span class="p">)</span>
+  <span class="s2">&quot;var template = jQuery.template(#{JSON.stringify(content)});\n&quot;</span> <span class="o">+</span>
+  <span class="s2">&quot;module.exports = (function(data){ return jQuery.tmpl(template, data); });\n&quot;</span>
+
+<span class="nx">require</span><span class="p">.</span><span class="nx">extensions</span><span class="p">[</span><span class="s1">&#39;.tmpl&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nf">(module, filename) -&gt;</span> 
+  <span class="nx">module</span><span class="p">.</span><span class="nx">_compile</span><span class="p">(</span><span class="nx">compilers</span><span class="p">.</span><span class="nx">tmpl</span><span class="p">(</span><span class="nx">filename</span><span class="p">))</span>
+  
+<span class="k">try</span>
+  <span class="nv">stylus = </span><span class="nx">require</span><span class="p">(</span><span class="s1">&#39;stylus&#39;</span><span class="p">)</span>
+  
+  <span class="nv">compilers.styl = </span><span class="nf">(path) -&gt;</span>
+    <span class="nv">content = </span><span class="nx">fs</span><span class="p">.</span><span class="nx">readFileSync</span><span class="p">(</span><span class="nx">path</span><span class="p">,</span> <span class="s1">&#39;utf8&#39;</span><span class="p">)</span>
+    <span class="nv">result = </span><span class="s1">&#39;&#39;</span>
+    <span class="nx">stylus</span><span class="p">(</span><span class="nx">content</span><span class="p">)</span>
+      <span class="p">.</span><span class="nx">include</span><span class="p">(</span><span class="nx">dirname</span><span class="p">(</span><span class="nx">path</span><span class="p">))</span>
+      <span class="p">.</span><span class="nx">render</span><span class="p">(</span><span class="nf">(err, css) -&gt;</span> 
+        <span class="k">throw</span> <span class="nx">err</span> <span class="k">if</span> <span class="nx">err</span>
+        <span class="nv">result = </span><span class="nx">css</span>
+      <span class="p">)</span>
+    <span class="nx">result</span>
+    
+  <span class="nx">require</span><span class="p">.</span><span class="nx">extensions</span><span class="p">[</span><span class="s1">&#39;.styl&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nf">(module, filename) -&gt;</span> 
+    <span class="nv">source = </span><span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">compilers</span><span class="p">.</span><span class="nx">styl</span><span class="p">(</span><span class="nx">filename</span><span class="p">))</span>
+    <span class="nx">module</span><span class="p">.</span><span class="nx">_compile</span> <span class="s2">&quot;module.exports = #{source}&quot;</span><span class="p">,</span> <span class="nx">filename</span>
+<span class="k">catch</span> <span class="nx">err</span>
+
+<span class="nv">module.exports = </span><span class="nx">compilers</span>
+
+</pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 
