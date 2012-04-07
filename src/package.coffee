@@ -1,4 +1,5 @@
 fs           = require('fs')
+# これどこで使うの？
 eco          = require('eco')
 uglify       = require('uglify-js')
 compilers    = require('./compilers')
@@ -19,23 +20,25 @@ class Package
     @stitch       = new Stitch(@paths)
     @modules      = @dependency.resolve().concat(@stitch.resolve())
     stitch(identifier: @identifier, modules: @modules)
-    
+
+  # @libsのファイルを読み込んで改行で連結する
   compileLibs: ->
     (fs.readFileSync(path, 'utf8') for path in @libs).join("\n")
-    
+
+　# コンパイルしたライブラリとモジュールを改行で連結して、uglifyを使ってミニファイ
   compile: (minify) ->
     result = [@compileLibs(), @compileModules()].join("\n")
     result = uglify(result) if minify
     result
-    
+
   createServer: ->
     (env, callback) =>
-      callback(200, 
-        'Content-Type': 'text/javascript', 
+      callback(200,
+        'Content-Type': 'text/javascript',
         @compile())
 
-module.exports = 
+module.exports =
   compilers:  compilers
   Package:    Package
-  createPackage: (config) -> 
+  createPackage: (config) ->
     new Package(config)

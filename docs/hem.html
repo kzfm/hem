@@ -24,13 +24,13 @@
 <span class="k">class</span> <span class="nx">Hem</span>
   <span class="vi">@exec: </span><span class="nf">(command, options) -&gt;</span>
     <span class="p">(</span><span class="k">new</span> <span class="err">@</span><span class="p">(</span><span class="nx">options</span><span class="p">)).</span><span class="nx">exec</span><span class="p">(</span><span class="nx">command</span><span class="p">)</span>
-  
+
   <span class="vi">@include: </span><span class="nf">(props) -&gt;</span>
     <span class="err">@</span><span class="o">::</span><span class="p">[</span><span class="nx">key</span><span class="p">]</span> <span class="o">=</span> <span class="nx">value</span> <span class="k">for</span> <span class="nx">key</span><span class="p">,</span> <span class="nx">value</span> <span class="k">of</span> <span class="nx">props</span>
-    
+
   <span class="nv">compilers: </span><span class="nx">compilers</span>
-    
-  <span class="nv">options: </span>
+
+  <span class="nv">options:</span>
     <span class="nv">slug: </span>        <span class="s1">&#39;./slug.json&#39;</span>
     <span class="nv">css: </span>         <span class="s1">&#39;./css&#39;</span>
     <span class="nv">libs: </span>        <span class="p">[]</span>
@@ -47,56 +47,52 @@
     <span class="nv">specs: </span>       <span class="s1">&#39;./test/specs&#39;</span>
     <span class="nv">specsPath: </span>   <span class="s1">&#39;/test/specs.js&#39;</span>
 
-  <span class="nv">constructor: </span><span class="nf">(options = {}) -&gt;</span>
-    <span class="nx">@options</span><span class="p">[</span><span class="nx">key</span><span class="p">]</span> <span class="o">=</span> <span class="nx">value</span> <span class="k">for</span> <span class="nx">key</span><span class="p">,</span> <span class="nx">value</span> <span class="k">of</span> <span class="nx">options</span>    
-    <span class="nx">@options</span><span class="p">[</span><span class="nx">key</span><span class="p">]</span> <span class="o">=</span> <span class="nx">value</span> <span class="k">for</span> <span class="nx">key</span><span class="p">,</span> <span class="nx">value</span> <span class="k">of</span> <span class="nx">@readSlug</span><span class="p">()</span>
-    
-    <span class="vi">@app = </span><span class="k">new</span> <span class="nx">strata</span><span class="p">.</span><span class="nx">Builder</span>
-    
+  <span class="nv">constructor: </span><span class="nf">(options = {}) -&gt;</span></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>デフォルトを読んでからreadSlugで上書き</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nx">@options</span><span class="p">[</span><span class="nx">key</span><span class="p">]</span> <span class="o">=</span> <span class="nx">value</span> <span class="k">for</span> <span class="nx">key</span><span class="p">,</span> <span class="nx">value</span> <span class="k">of</span> <span class="nx">options</span>
+    <span class="nx">@options</span><span class="p">[</span><span class="nx">key</span><span class="p">]</span> <span class="o">=</span> <span class="nx">value</span> <span class="k">for</span> <span class="nx">key</span><span class="p">,</span> <span class="nx">value</span> <span class="k">of</span> <span class="nx">@readSlug</span><span class="p">()</span></pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>httpサーバー</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="vi">@app = </span><span class="k">new</span> <span class="nx">strata</span><span class="p">.</span><span class="nx">Builder</span>
+
   <span class="nv">server: </span><span class="o">-&gt;</span>
     <span class="nx">@app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">strata</span><span class="p">.</span><span class="nx">contentLength</span><span class="p">)</span>
-      
+
     <span class="nx">@app</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">@options</span><span class="p">.</span><span class="nx">cssPath</span><span class="p">,</span> <span class="nx">@cssPackage</span><span class="p">().</span><span class="nx">createServer</span><span class="p">())</span>
     <span class="nx">@app</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">@options</span><span class="p">.</span><span class="nx">jsPath</span><span class="p">,</span> <span class="nx">@hemPackage</span><span class="p">().</span><span class="nx">createServer</span><span class="p">())</span>
-    
+
     <span class="k">if</span> <span class="nx">path</span><span class="p">.</span><span class="nx">existsSync</span><span class="p">(</span><span class="nx">@options</span><span class="p">.</span><span class="nx">specs</span><span class="p">)</span>
       <span class="nx">@app</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">@options</span><span class="p">.</span><span class="nx">specsPath</span><span class="p">,</span> <span class="nx">@specsPackage</span><span class="p">().</span><span class="nx">createServer</span><span class="p">())</span>
-          
+
     <span class="k">if</span> <span class="nx">path</span><span class="p">.</span><span class="nx">existsSync</span><span class="p">(</span><span class="nx">@options</span><span class="p">.</span><span class="nx">testPublic</span><span class="p">)</span>
       <span class="nx">@app</span><span class="p">.</span><span class="nx">map</span> <span class="nx">@options</span><span class="p">.</span><span class="nx">testPath</span><span class="p">,</span> <span class="p">(</span><span class="nx">app</span><span class="p">)</span> <span class="o">=&gt;</span>
         <span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">strata</span><span class="p">.</span><span class="nx">static</span><span class="p">,</span> <span class="nx">@options</span><span class="p">.</span><span class="nx">testPublic</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;index.html&#39;</span><span class="p">,</span> <span class="s1">&#39;index.htm&#39;</span><span class="p">])</span>
-    
+
     <span class="k">if</span> <span class="nx">path</span><span class="p">.</span><span class="nx">existsSync</span><span class="p">(</span><span class="nx">@options</span><span class="p">.</span><span class="nx">public</span><span class="p">)</span>
       <span class="nx">@app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">strata</span><span class="p">.</span><span class="nx">static</span><span class="p">,</span> <span class="nx">@options</span><span class="p">.</span><span class="nx">public</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;index.html&#39;</span><span class="p">,</span> <span class="s1">&#39;index.htm&#39;</span><span class="p">])</span>
-    
+
     <span class="nx">strata</span><span class="p">.</span><span class="nx">run</span><span class="p">(</span><span class="nx">@app</span><span class="p">,</span> <span class="nv">port: </span><span class="nx">@options</span><span class="p">.</span><span class="nx">port</span><span class="p">)</span>
-    
+
   <span class="nv">build: </span><span class="o">-&gt;</span>
     <span class="nv">source = </span><span class="nx">@hemPackage</span><span class="p">().</span><span class="nx">compile</span><span class="p">(</span><span class="o">not</span> <span class="nx">argv</span><span class="p">.</span><span class="nx">debug</span><span class="p">)</span>
     <span class="nx">fs</span><span class="p">.</span><span class="nx">writeFileSync</span><span class="p">(</span><span class="nx">path</span><span class="p">.</span><span class="nx">join</span><span class="p">(</span><span class="nx">@options</span><span class="p">.</span><span class="nx">public</span><span class="p">,</span> <span class="nx">@options</span><span class="p">.</span><span class="nx">jsPath</span><span class="p">),</span> <span class="nx">source</span><span class="p">)</span>
-    
+
     <span class="nv">source = </span><span class="nx">@cssPackage</span><span class="p">().</span><span class="nx">compile</span><span class="p">()</span>
     <span class="nx">fs</span><span class="p">.</span><span class="nx">writeFileSync</span><span class="p">(</span><span class="nx">path</span><span class="p">.</span><span class="nx">join</span><span class="p">(</span><span class="nx">@options</span><span class="p">.</span><span class="nx">public</span><span class="p">,</span> <span class="nx">@options</span><span class="p">.</span><span class="nx">cssPath</span><span class="p">),</span> <span class="nx">source</span><span class="p">)</span>
 
   <span class="nv">watch: </span><span class="o">-&gt;</span>
-    <span class="nx">@build</span><span class="p">()</span> 
+    <span class="nx">@build</span><span class="p">()</span>
     <span class="k">for</span> <span class="nx">dir</span> <span class="k">in</span> <span class="p">(</span><span class="nx">path</span><span class="p">.</span><span class="nx">dirname</span><span class="p">(</span><span class="nx">lib</span><span class="p">)</span> <span class="k">for</span> <span class="nx">lib</span> <span class="k">in</span> <span class="nx">@options</span><span class="p">.</span><span class="nx">libs</span><span class="p">).</span><span class="nx">concat</span> <span class="nx">@options</span><span class="p">.</span><span class="nx">css</span><span class="p">,</span> <span class="nx">@options</span><span class="p">.</span><span class="nx">paths</span>
       <span class="k">continue</span> <span class="nx">unless</span> <span class="nx">path</span><span class="p">.</span><span class="nx">existsSync</span><span class="p">(</span><span class="nx">dir</span><span class="p">)</span>
       <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;watch&#39;</span><span class="p">).</span><span class="nx">watchTree</span> <span class="nx">dir</span><span class="p">,</span> <span class="p">(</span><span class="nx">file</span><span class="p">,</span> <span class="nx">curr</span><span class="p">,</span> <span class="nx">prev</span><span class="p">)</span> <span class="o">=&gt;</span>
         <span class="k">if</span> <span class="nx">curr</span> <span class="o">and</span> <span class="p">(</span><span class="nx">curr</span><span class="p">.</span><span class="nx">nlink</span> <span class="o">is</span> <span class="mi">0</span> <span class="o">or</span> <span class="o">+</span><span class="nx">curr</span><span class="p">.</span><span class="nx">mtime</span> <span class="o">isnt</span> <span class="o">+</span><span class="nx">prev</span><span class="o">?</span><span class="p">.</span><span class="nx">mtime</span><span class="p">)</span>
           <span class="nx">console</span><span class="p">.</span><span class="nx">log</span> <span class="s2">&quot;#{file} changed.  Rebuilding.&quot;</span>
           <span class="nx">@build</span><span class="p">()</span>
-          
+
   <span class="nv">exec: </span><span class="nf">(command = argv._[0]) -&gt;</span>
     <span class="k">return</span> <span class="nx">help</span><span class="p">()</span> <span class="nx">unless</span> <span class="err">@</span><span class="p">[</span><span class="nx">command</span><span class="p">]</span>
     <span class="err">@</span><span class="p">[</span><span class="nx">command</span><span class="p">]()</span>
     <span class="k">switch</span> <span class="nx">command</span>
       <span class="k">when</span> <span class="s1">&#39;build&#39;</span>  <span class="k">then</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span> <span class="s1">&#39;Built application&#39;</span>
-      <span class="k">when</span> <span class="s1">&#39;watch&#39;</span>  <span class="k">then</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span> <span class="s1">&#39;Watching application&#39;</span></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>Private</p>             </td>             <td class="code">               <div class="highlight"><pre>    
-  <span class="nv">readSlug: </span><span class="nf">(slug = @options.slug) -&gt;</span> 
+      <span class="k">when</span> <span class="s1">&#39;watch&#39;</span>  <span class="k">then</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span> <span class="s1">&#39;Watching application&#39;</span></pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>Private</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nv">readSlug: </span><span class="nf">(slug = @options.slug) -&gt;</span>
     <span class="k">return</span> <span class="p">{}</span> <span class="nx">unless</span> <span class="nx">slug</span> <span class="o">and</span> <span class="nx">path</span><span class="p">.</span><span class="nx">existsSync</span><span class="p">(</span><span class="nx">slug</span><span class="p">)</span>
     <span class="nx">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">fs</span><span class="p">.</span><span class="nx">readFileSync</span><span class="p">(</span><span class="nx">slug</span><span class="p">,</span> <span class="s1">&#39;utf-8&#39;</span><span class="p">))</span>
-    
+
   <span class="nv">cssPackage: </span><span class="o">-&gt;</span>
     <span class="nx">css</span><span class="p">.</span><span class="nx">createPackage</span><span class="p">(</span><span class="nx">@options</span><span class="p">.</span><span class="nx">css</span><span class="p">)</span>
 
@@ -106,7 +102,7 @@
       <span class="nv">paths: </span><span class="nx">@options</span><span class="p">.</span><span class="nx">paths</span>
       <span class="nv">libs: </span><span class="nx">@options</span><span class="p">.</span><span class="nx">libs</span>
     <span class="p">)</span>
-    
+
   <span class="nv">specsPackage: </span><span class="o">-&gt;</span>
     <span class="nx">specs</span><span class="p">.</span><span class="nx">createPackage</span><span class="p">(</span><span class="nx">@options</span><span class="p">.</span><span class="nx">specs</span><span class="p">)</span>
 
