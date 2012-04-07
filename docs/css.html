@@ -3,22 +3,21 @@
 
 <span class="k">class</span> <span class="nx">CSS</span>
   <span class="nv">constructor: </span><span class="nf">(path) -&gt;</span>
-    <span class="k">try</span>
-      <span class="vi">@path = </span><span class="nx">require</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span><span class="nx">resolve</span><span class="p">(</span><span class="nx">path</span><span class="p">))</span>
-    <span class="k">catch</span> <span class="nx">e</span>
-    
-  <span class="nv">compile: </span><span class="o">-&gt;</span>
+    <span class="k">try</span></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>pathの解決をする</p>
+
+<p><a href="http://nodejs.org/docs/v0.6.14/api/globals.html#globals_require_resolve">require.resolve</a>
+と
+<a href="http://nodejs.org/docs/v0.6.14/api/path.html#path_path_resolve_from_to">path.resolve</a></p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="vi">@path = </span><span class="nx">require</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span><span class="nx">resolve</span><span class="p">(</span><span class="nx">path</span><span class="p">))</span>
+    <span class="k">catch</span> <span class="nx">e</span></pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>キャッシュを削除してコンパイルし直す</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nv">compile: </span><span class="o">-&gt;</span>
     <span class="k">return</span> <span class="nx">unless</span> <span class="nx">@path</span>
     <span class="k">delete</span> <span class="nx">require</span><span class="p">.</span><span class="nx">cache</span><span class="p">[</span><span class="nx">@path</span><span class="p">]</span>
-    <span class="nx">require</span><span class="p">(</span><span class="nx">@path</span><span class="p">)</span>
-  
-  <span class="nv">createServer: </span><span class="o">-&gt;</span>
+    <span class="nx">require</span><span class="p">(</span><span class="nx">@path</span><span class="p">)</span></pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>どこで使うかよくわからん</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nv">createServer: </span><span class="o">-&gt;</span>
     <span class="p">(</span><span class="nx">env</span><span class="p">,</span> <span class="nx">callback</span><span class="p">)</span> <span class="o">=&gt;</span>
-      <span class="nx">callback</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> 
-        <span class="s1">&#39;Content-Type&#39;</span><span class="o">:</span> <span class="s1">&#39;text/css&#39;</span><span class="p">,</span> 
+      <span class="nx">callback</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span>
+        <span class="s1">&#39;Content-Type&#39;</span><span class="o">:</span> <span class="s1">&#39;text/css&#39;</span><span class="p">,</span>
         <span class="nx">@compile</span><span class="p">())</span>
-      
-<span class="nv">module.exports = </span>
+
+<span class="nv">module.exports =</span>
   <span class="nv">CSS: </span><span class="nx">CSS</span>
   <span class="nv">createPackage: </span><span class="nf">(path) -&gt;</span>
     <span class="k">new</span> <span class="nx">CSS</span><span class="p">(</span><span class="nx">path</span><span class="p">)</span>
