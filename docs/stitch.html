@@ -5,11 +5,9 @@
 <span class="p">{</span><span class="nx">flatten</span><span class="p">}</span>    <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;./utils&#39;</span><span class="p">)</span>
 
 <span class="k">class</span> <span class="nx">Stitch</span>
-  <span class="nv">constructor: </span><span class="nf">(@paths = []) -&gt;</span>
-    <span class="vi">@paths = </span><span class="p">(</span><span class="nx">npath</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span><span class="nx">path</span><span class="p">)</span> <span class="k">for</span> <span class="nx">path</span> <span class="k">in</span> <span class="nx">@paths</span><span class="p">)</span>
-  
-  <span class="nv">resolve: </span><span class="o">-&gt;</span>
-    <span class="nx">flatten</span><span class="p">(</span><span class="nx">@walk</span><span class="p">(</span><span class="nx">path</span><span class="p">)</span> <span class="k">for</span> <span class="nx">path</span> <span class="k">in</span> <span class="nx">@paths</span><span class="p">)</span></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>Private</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nv">walk: </span><span class="nf">(path, parent = path, result = []) -&gt;</span>
+  <span class="nv">constructor: </span><span class="nf">(@paths = []) -&gt;</span></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>pathを綺麗に</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="vi">@paths = </span><span class="p">(</span><span class="nx">npath</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span><span class="nx">path</span><span class="p">)</span> <span class="k">for</span> <span class="nx">path</span> <span class="k">in</span> <span class="nx">@paths</span><span class="p">)</span></pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>Moduleの配列をフラットな配列にする</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nv">resolve: </span><span class="o">-&gt;</span>
+    <span class="nx">flatten</span><span class="p">(</span><span class="nx">@walk</span><span class="p">(</span><span class="nx">path</span><span class="p">)</span> <span class="k">for</span> <span class="nx">path</span> <span class="k">in</span> <span class="nx">@paths</span><span class="p">)</span></pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>Private
+再帰的にたどってモジュールにしていく</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nv">walk: </span><span class="nf">(path, parent = path, result = []) -&gt;</span>
     <span class="k">return</span> <span class="nx">unless</span> <span class="nx">npath</span><span class="p">.</span><span class="nx">existsSync</span><span class="p">(</span><span class="nx">path</span><span class="p">)</span>
     <span class="k">for</span> <span class="nx">child</span> <span class="k">in</span> <span class="nx">fs</span><span class="p">.</span><span class="nx">readdirSync</span><span class="p">(</span><span class="nx">path</span><span class="p">)</span>
       <span class="nv">child = </span><span class="nx">npath</span><span class="p">.</span><span class="nx">join</span><span class="p">(</span><span class="nx">path</span><span class="p">,</span> <span class="nx">child</span><span class="p">)</span>
@@ -22,16 +20,15 @@
     <span class="nx">result</span>
 
 <span class="k">class</span> <span class="nx">Module</span>
-  <span class="nv">constructor: </span><span class="nf">(@filename, @parent) -&gt;</span>
-    <span class="vi">@ext = </span><span class="nx">npath</span><span class="p">.</span><span class="nx">extname</span><span class="p">(</span><span class="nx">@filename</span><span class="p">).</span><span class="nx">slice</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+  <span class="nv">constructor: </span><span class="nf">(@filename, @parent) -&gt;</span></pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>ドットを取り除く</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="vi">@ext = </span><span class="nx">npath</span><span class="p">.</span><span class="nx">extname</span><span class="p">(</span><span class="nx">@filename</span><span class="p">).</span><span class="nx">slice</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
     <span class="vi">@id  = </span><span class="nx">modulerize</span><span class="p">(</span><span class="nx">@filename</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="nx">npath</span><span class="p">.</span><span class="nx">join</span><span class="p">(</span><span class="nx">@parent</span><span class="p">,</span> <span class="s1">&#39;/&#39;</span><span class="p">),</span> <span class="s1">&#39;&#39;</span><span class="p">))</span>
-    
+
   <span class="nv">compile: </span><span class="o">-&gt;</span>
     <span class="nx">compilers</span><span class="p">[</span><span class="nx">@ext</span><span class="p">](</span><span class="nx">@filename</span><span class="p">)</span>
-    
+
   <span class="nv">valid: </span><span class="o">-&gt;</span>
     <span class="o">!!</span><span class="nx">compilers</span><span class="p">[</span><span class="nx">@ext</span><span class="p">]</span>
-    
+
 <span class="nv">module.exports = </span><span class="nx">Stitch</span>
 
 </pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 

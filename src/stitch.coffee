@@ -6,13 +6,15 @@ compilers    = require('./compilers')
 
 class Stitch
   constructor: (@paths = []) ->
+    # pathを綺麗に
     @paths = (npath.resolve(path) for path in @paths)
-  
+
+  # Moduleの配列をフラットな配列にする
   resolve: ->
     flatten(@walk(path) for path in @paths)
 
   # Private
-
+  # 再帰的にたどってモジュールにしていく
   walk: (path, parent = path, result = []) ->
     return unless npath.existsSync(path)
     for child in fs.readdirSync(path)
@@ -27,13 +29,14 @@ class Stitch
 
 class Module
   constructor: (@filename, @parent) ->
+    # ドットを取り除く
     @ext = npath.extname(@filename).slice(1)
     @id  = modulerize(@filename.replace(npath.join(@parent, '/'), ''))
-    
+
   compile: ->
     compilers[@ext](@filename)
-    
+
   valid: ->
     !!compilers[@ext]
-    
+
 module.exports = Stitch
